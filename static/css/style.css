@@ -1,0 +1,54 @@
+/* Custom styles for File Encryption System */
+
+/* Main content container padding */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Card styling */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Button hover effects */
+.btn {
+    transition: all 0.3s ease;
+}
+
+/* File icons */
+.file-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Custom file upload styling */
+.custom-file-upload {
+    position: relative;
+}
+
+/* Error page styling */
+.error-page {
+    padding: 5rem 0;
+}
+
+/* Breadcrumb styling */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0.5rem 0;
+}
+
+/* Ensure footer stays at bottom */
+.content-wrapper {
+    min-height: calc(100vh - 210px);
+}

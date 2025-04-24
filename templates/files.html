@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>My Files</h2>
+            <a href="{{ url_for('upload_file') }}" class="btn btn-primary">
+                <i class="fas fa-upload me-2"></i>Upload File
+            </a>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="owned-tab" data-bs-toggle="tab" data-bs-target="#owned" 
+                        type="button" role="tab" aria-controls="owned" aria-selected="true">
+                    My Files
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="shared-tab" data-bs-toggle="tab" data-bs-target="#shared" 
+                        type="button" role="tab" aria-controls="shared" aria-selected="false">
+                    Shared With Me
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Owned Files Tab -->
+            <div class="tab-pane fade show active" id="owned" role="tabpanel" aria-labelledby="owned-tab">
+                {% if owned_files %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Size</th>
+                                <th>Uploaded</th>
+                                <th>Last Accessed</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in owned_files %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('file_details', file_id=file.id) }}" class="text-decoration-none">
+                                        <i class="fas fa-file me-2"></i>{{ file.original_filename }}
+                                    </a>
+                                </td>
+                                <td>{{ (file.file_size / 1024)|round(2) }} KB</td>
+                                <td>{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% if file.last_accessed %}
+                                        {{ file.last_accessed.strftime('%Y-%m-%d %H:%M') }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('file_details', file_id=file.id) }}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a href="{{ url_for('decrypt_file', file_id=file.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <a href="{{ url_for('share_file', file_id=file.id) }}" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-share-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>You haven't uploaded any files yet.
+                    <a href="{{ url_for('upload_file') }}" class="alert-link">Upload your first file</a>.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Shared Files Tab -->
+            <div class="tab-pane fade" id="shared" role="tabpanel" aria-labelledby="shared-tab">
+                {% if shared_files %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Owner</th>
+                                <th>Size</th>
+                                <th>Uploaded</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in shared_files %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('file_details', file_id=file.id) }}" class="text-decoration-none">
+                                        <i class="fas fa-file-alt me-2"></i>{{ file.original_filename }}
+                                    </a>
+                                </td>
+                                <td>{{ file.owner.username }}</td>
+                                <td>{{ (file.file_size / 1024)|round(2) }} KB</td>
+                                <td>{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('file_details', file_id=file.id) }}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a href="{{ url_for('decrypt_file', file_id=file.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No files have been shared with you yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

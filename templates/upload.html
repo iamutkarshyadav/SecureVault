@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Upload & Encrypt File</h2>
+                
+                <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        <div class="custom-file-upload mb-3">
+                            {{ form.file.label(class="form-label") }}
+                            
+                            {% if form.file.errors %}
+                                {{ form.file(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.file.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.file(class="form-control") }}
+                            {% endif %}
+                            <small class="form-text text-muted">Max file size: 16MB</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Encryption Password</h5>
+                            <p>This password will be used to encrypt your file. You'll need it later to decrypt the file.</p>
+                            <p class="mb-0"><strong>Important:</strong> We don't store this password. If you forget it, you won't be able to recover your file.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.encryption_password.label(class="form-label") }}
+                        
+                        {% if form.encryption_password.errors %}
+                            {{ form.encryption_password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.encryption_password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.encryption_password(class="form-control") }}
+                        {% endif %}
+                        <small class="form-text text-muted">Use a strong password with at least 8 characters.</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form.confirm_password.label(class="form-label") }}
+                        
+                        {% if form.confirm_password.errors %}
+                            {{ form.confirm_password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.confirm_password(class="form-control") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Password Tips</h5>
+                <ul class="mb-0">
+                    <li>Use a mix of letters, numbers, and special characters</li>
+                    <li>Make it at least 12 characters long for best security</li>
+                    <li>Don't reuse passwords from other accounts</li>
+                    <li>Consider using a password manager to save your encryption passwords</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

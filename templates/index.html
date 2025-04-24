@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-md-6">
+        <h1 class="display-4 fw-bold">Secure File Encryption System</h1>
+        <p class="lead">Protect your sensitive files with military-grade encryption.</p>
+        <hr class="my-4">
+        <p>Our system uses AES-256-GCM encryption to keep your files safe and secure. Upload, encrypt, and manage your files with ease.</p>
+        
+        {% if current_user.is_authenticated %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a href="{{ url_for('upload_file') }}" class="btn btn-primary me-md-2">
+                <i class="fas fa-upload me-2"></i>Upload File
+            </a>
+            <a href="{{ url_for('files') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-file-alt me-2"></i>My Files
+            </a>
+        </div>
+        {% else %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a href="{{ url_for('register') }}" class="btn btn-primary me-md-2">
+                <i class="fas fa-user-plus me-2"></i>Register
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-6 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="340" height="340" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <circle cx="12" cy="16" r="1"></circle>
+        </svg>
+    </div>
+</div>
+
+<div class="row mt-5 pt-5">
+    <div class="col-12 text-center mb-4">
+        <h2>Features</h2>
+        <p class="lead">Our encryption system provides everything you need to keep your files secure.</p>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                <h4>Advanced Encryption</h4>
+                <p>Uses AES-256-GCM encryption, one of the strongest encryption algorithms available.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <i class="fas fa-key fa-3x text-primary mb-3"></i>
+                <h4>Secure Key Management</h4>
+                <p>Your encryption keys are securely stored and never shared with anyone.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h4>File Sharing</h4>
+                <p>Securely share encrypted files with other users of the system.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 py-5 bg-dark rounded-3">
+    <div class="col-12 text-center mb-4">
+        <h2>How It Works</h2>
+        <p class="lead">Encrypting and managing your files is simple and secure.</p>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="rounded-circle bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <i class="fas fa-upload fa-2x text-white"></i>
+            </div>
+            <h5>Upload</h5>
+            <p>Upload your file to our secure server</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="rounded-circle bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <i class="fas fa-lock fa-2x text-white"></i>
+            </div>
+            <h5>Encrypt</h5>
+            <p>File is encrypted with your password</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="rounded-circle bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <i class="fas fa-database fa-2x text-white"></i>
+            </div>
+            <h5>Store</h5>
+            <p>Encrypted file is stored securely</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="rounded-circle bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <i class="fas fa-unlock fa-2x text-white"></i>
+            </div>
+            <h5>Access</h5>
+            <p>Decrypt and download whenever needed</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

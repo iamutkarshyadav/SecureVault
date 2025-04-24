@@ -1,0 +1,217 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('files') }}">My Files</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ file.original_filename }}</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="fas fa-file me-2"></i>{{ file.original_filename }}
+                </h4>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6 class="text-muted">File Details</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Size:</strong> {{ (file.file_size / 1024)|round(2) }} KB</li>
+                            <li><strong>Uploaded:</strong> {{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</li>
+                            <li>
+                                <strong>Last Accessed:</strong> 
+                                {% if file.last_accessed %}
+                                    {{ file.last_accessed.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                    Never
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <h6 class="text-muted">Encryption Details</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Algorithm:</strong> {{ file.encryption_algorithm }}</li>
+                            {% if file.user_id == current_user.id %}
+                            <li><strong>Owner:</strong> You</li>
+                            {% else %}
+                            <li><strong>Owner:</strong> {{ file.owner.username }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                
+                {% if decrypt_mode %}
+                <hr>
+                
+                <!-- Decrypt Form -->
+                <form method="POST" action="{{ url_for('decrypt_file', file_id=file.id) }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.encryption_password.label(class="form-label") }}
+                        
+                        {% if form.encryption_password.errors %}
+                            {{ form.encryption_password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.encryption_password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.encryption_password(class="form-control") }}
+                        {% endif %}
+                        <small class="form-text text-muted">Enter the password used to encrypt this file.</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('file_details', file_id=file.id) }}" class="btn btn-light">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                
+                {% elif share_mode and file.user_id == current_user.id %}
+                <hr>
+                
+                <!-- Share Form -->
+                <form method="POST" action="{{ url_for('share_file', file_id=file.id) }}">
+                    {{ share_form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ share_form.username.label(class="form-label") }}
+                        
+                        {% if share_form.username.errors %}
+                            {{ share_form.username(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in share_form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ share_form.username(class="form-control") }}
+                        {% endif %}
+                        <small class="form-text text-muted">Enter the username of the person you want to share this file with.</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('file_details', file_id=file.id) }}" class="btn btn-light">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
+                        {{ share_form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                
+                {% else %}
+                <!-- Actions -->
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('files') }}" class="btn btn-light">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Files
+                    </a>
+                    
+                    <div class="btn-group">
+                        <a href="{{ url_for('decrypt_file', file_id=file.id) }}" class="btn btn-primary">
+                            <i class="fas fa-download me-2"></i>Decrypt & Download
+                        </a>
+                        
+                        {% if file.user_id == current_user.id %}
+                        <a href="{{ url_for('share_file', file_id=file.id) }}" class="btn btn-info">
+                            <i class="fas fa-share-alt me-2"></i>Share
+                        </a>
+                        
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash-alt me-2"></i>Delete
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Shared With Section (only for file owner) -->
+        {% if file.user_id == current_user.id and shared_with %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Shared With</h5>
+                
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Shared On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in shared_with %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.granted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Security Info</h5>
+                <p class="card-text">This file is encrypted using {{ file.encryption_algorithm }} which is a highly secure encryption algorithm.</p>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Important:</strong> Keep your encryption password safe. If you lose it, the file cannot be recovered.
+                </div>
+                
+                <h6 class="mt-3">Security Tips:</h6>
+                <ul>
+                    <li>Use a strong, unique password for each file</li>
+                    <li>Never share your encryption password via email or text</li>
+                    <li>For maximum security, decrypt files only when needed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+{% if file.user_id == current_user.id %}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong>{{ file.original_filename }}</strong>?</p>
+                <p class="text-danger">This action cannot be undone. The file will be permanently deleted.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_file', file_id=file.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete File</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
