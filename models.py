@@ -55,7 +55,7 @@ class FileAccess(db.Model):
     granted_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     granted_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
-    # Define unique constraint to prevent duplicate access
+    
     __table_args__ = (db.UniqueConstraint('file_id', 'user_id', name='_file_user_uc'),)
     
     user = db.relationship('User', foreign_keys=[user_id])
