@@ -1,6 +1,4 @@
-/* Custom styles for File Encryption System */
 
-/* Main content container padding */
 body {
     min-height: 100vh;
     display: flex;
@@ -26,7 +24,7 @@ footer {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Button hover effects */
+
 .btn {
     transition: all 0.3s ease;
 }
@@ -37,7 +35,7 @@ footer {
     margin-bottom: 1rem;
 }
 
-/* Custom file upload styling */
+
 .custom-file-upload {
     position: relative;
 }
