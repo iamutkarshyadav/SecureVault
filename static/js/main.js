@@ -1,34 +1,29 @@
-// JavaScript for the File Encryption System
-
 document.addEventListener('DOMContentLoaded', function() {
     // File upload preview
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            const fileName = this.files[0]?.name || 'No file chosen';
-            const fileSize = this.files[0]?.size || 0;
-            const fileSizeInKB = (fileSize / 1024).toFixed(2);
-            
-            // Display file info if needed
-            console.log(`Selected file: ${fileName} (${fileSizeInKB} KB)`);
+        fileInput.addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                const fileLabel = document.querySelector('.file-label');
+                if (fileLabel) {
+                    fileLabel.textContent = fileName;
+                }
+            }
         });
     }
     
-    // Password strength meter could be added here
-    const passwordInput = document.querySelector('input[name="encryption_password"]');
-    if (passwordInput) {
-        passwordInput.addEventListener('input', function() {
-            // Simple password strength calculation
-            let strength = 0;
-            const password = this.value;
+    // Password confirmation validation
+    const passwordForm = document.querySelector('form');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', function(e) {
+            const password = document.querySelector('input[name="encryption_password"]');
+            const confirmPassword = document.querySelector('input[name="confirm_password"]');
             
-            if (password.length >= 8) strength += 1;
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
-            if (password.match(/\d/)) strength += 1;
-            if (password.match(/[^a-zA-Z\d]/)) strength += 1;
-            
-            // You could update a UI element here to show password strength
-            console.log(`Password strength: ${strength}/4`);
+            if (password && confirmPassword && password.value !== confirmPassword.value) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
         });
     }
     
@@ -40,12 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Auto-dismiss alerts after 5 seconds
-    const alerts = document.querySelectorAll('.alert:not(.alert-warning):not(.alert-info)');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-            bsAlert.close();
+    // Flash message auto-hide
+    const flashMessages = document.querySelectorAll('.alert');
+    flashMessages.forEach(function(message) {
+        setTimeout(function() {
+            message.style.opacity = '0';
+            setTimeout(function() {
+                message.remove();
+            }, 500);
         }, 5000);
     });
 });

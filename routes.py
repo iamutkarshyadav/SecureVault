@@ -222,20 +222,22 @@ def decrypt_file(file_id):
             db.session.commit()
             
             # Send the decrypted file to the user
-            @app.after_request
-            def remove_temp_file(response):
+            response = send_file(
+                decrypted_path,
+                as_attachment=True,
+                download_name=file.original_filename
+            )
+            
+            # Add cleanup callback to response
+            @response.call_on_close
+            def cleanup():
                 try:
                     os.remove(decrypted_path)
                     os.rmdir(temp_dir)
                 except Exception as e:
                     logger.error(f"Error removing temp file: {str(e)}")
-                return response
             
-            return send_file(
-                decrypted_path,
-                as_attachment=True,
-                download_name=file.original_filename
-            )
+            return response
             
         except Exception as e:
             logger.error(f"File decryption error: {str(e)}")
